@@ -1,33 +1,33 @@
-# Release Compatibility Checks
+# 发布兼容性检查
 
-These are release acceptance scenarios. They have not been executed against vendor applications.
+以下为发布验收场景，尚未在各厂商应用中实际执行。
 
-For every host and surface, record the product version, date checked, Skill import path, subagent dispatch mechanism, model assignment fields, runtime telemetry availability, and configuration persistence behavior.
+针对每个平台和具体界面，记录产品版本、核对日期、Skill 导入路径、子代理派发方式、模型设置字段、运行时信息是否可观测，以及配置是否能持久保存。
 
-## Core scenarios
+## 核心场景
 
-1. The Planner produces a plan and a distinct Reviewer receives it in an independent context.
-2. A passing plan review permits execution; a plan gap routes to the Planner.
-3. An execution defect routes to the Executor, followed by an independent re-review.
-4. A routine next step keeps the configured models.
-5. A serious planning or route error can trigger Reviewer-selected Planner escalation no earlier than corrective cycle 4.
-6. Unsupported model assignment, rejected dispatch, or unconfirmed assignment is reported without silent substitution.
-7. Missing runtime model telemetry is explicitly marked unobservable and never described as verified runtime identity.
-8. If the saved profile requires runtime-model telemetry, an unobservable host pauses before dispatch and asks whether assignment-only evidence is acceptable.
-9. At cycle 8, the Skill stops additional corrections and asks for explicit approval before a bounded extension.
-10. Material ambiguity invokes grilling when available or asks frontier questions and waits for user confirmation.
-11. Completion consolidates the final files and important log; cleanup requires a reviewed manifest and a separate closure review.
-12. First-use setup is asked once, records host-specific models, and is not repeated when a valid profile exists.
-13. GitHub research uses the configured star threshold, records sources, and does not clone or execute repositories without authorization.
+1. 规划代理生成计划，独立审阅代理在单独上下文中收到该计划。
+2. 计划审阅通过后允许执行；发现规划缺口时退回规划代理。
+3. 发现执行缺陷时退回执行代理修复，再由独立审阅代理复核。
+4. 正常推进下一步时继续使用已配置的模型。
+5. 严重规划或路线错误可触发由审阅代理选择的规划模型升级，但不得早于第 4 轮修正。
+6. 模型设置不受支持、派发被拒绝或模型分配未确认时，明确报告，不得静默替换。
+7. 缺少运行时模型信息时，明确标记为不可观测，不得声称已核验实际运行模型。
+8. 若用户配置要求核验运行时模型，而宿主无法提供信息，则在派发前暂停，并询问用户是否接受只核验模型分配。
+9. 达到第 8 轮时停止追加修正；如需扩展，先取得用户明确批准，再设置有界的新上限。
+10. 遇到实质性不确定事项时，若可用则调用 grilling；否则提出关键澄清问题并等待用户确认。
+11. 验收通过后整合最终文件和重要日志；清理须经过审阅清单批准，之后还要进行闭环复核。
+12. 首次使用时询问一次配置并记录各平台模型；已有有效配置时不重复询问。
+13. GitHub 调研使用配置的 Star 门槛并记录来源；未经授权不得克隆或运行仓库代码。
 
-## Host-specific notes
+## 平台专项说明
 
-- Codex: verify the plugin/Skill loads and dispatch arguments accept the configured role models. Do not infer runtime telemetry from dispatch arguments.
-- Claude Code: verify three custom agents load with the selected model and effort fields.
-- TraeWork: verify the selected desktop/web/mobile surface, mode, edition, version, Skill import, and independent dispatch separately. Do not infer Work support from TraeCode Subagent documentation.
-- Qoder: verify the selected CLI or UI surface. The included files target Qoder CLI; verify custom agent discovery and model/effort overrides there.
-- Cursor: verify actual model assignment and detect documented fallback conditions.
-- OpenCode: verify Skill discovery path and provider/model field handling.
-- WorkBuddy: verify the exact desktop, Enterprise, or Managed Agents surface and whether role dispatch is independent.
+- Codex：确认插件或 Skill 可被加载，且派发参数能接受指定角色模型。不得仅凭派发参数推断运行时模型。
+- Claude Code：确认三个自定义代理能以所选模型和 effort 字段加载。
+- TraeWork：分别核实网页、桌面或移动界面、模式、版本、Skill 导入和独立派发能力。不得根据 TraeCode 的 Subagent 文档推断 TraeWork 支持。
+- Qoder：确认使用 CLI 还是界面版本。当前模板面向 Qoder CLI；检查自定义代理发现和模型/effort 覆盖是否有效。
+- Cursor：核实实际模型分配，并识别文档说明的回退情形。
+- OpenCode：核实 Skill 发现路径和服务提供方/模型字段解析。
+- WorkBuddy：核实具体是桌面版、企业版还是 Managed Agents，以及是否支持独立角色派发。
 
-Do not publish a host as fully supported until its core scenarios pass. If only import or prompt bridging works, label it as a bridge.
+核心场景通过之前，不得将平台标记为完整支持。若只支持 Skill 导入或提示词桥接，应标记为桥接方案。

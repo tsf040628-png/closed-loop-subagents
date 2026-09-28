@@ -1,11 +1,11 @@
-# Cursor Bridge
+# Cursor 轻量桥接
 
-Install the shared Skill in a Cursor-discovered Skill directory. Copy the definitions in `agents/` to `.cursor/agents/` for project scope or `~/.cursor/agents/` for user scope. They use independent contexts and return results to the Controller.
+将通用 Skill 安装到 Cursor 可发现的 Skill 目录。把 agents/ 中的代理定义复制到项目级目录 .cursor/agents/，或用户级目录 ~/.cursor/agents/。每个代理应使用独立上下文，并将结果交还协调器。
 
-Ask the user for Cursor-available model IDs and set each template's `model` field. Cursor can fall back from a requested model when plan, region, or team policy prevents its use. Record the configured model, the accepted assignment if exposed, and any runtime-reported model separately. A fallback or missing confirmation must not be reported as an exact model match. Keep the Reviewer `readonly: true`; the Planner can edit only when dispatched for final integration. If per-invocation escalation is unavailable, create a separate run-scoped Planner definition with the approved upgrade model rather than changing the default silently.
+询问用户当前 Cursor 账号可用的模型 ID，并写入每个模板的 model 字段。若账号方案、地区或团队策略不允许使用指定模型，Cursor 可能回退到其他模型。分别记录配置的模型、宿主确认接受的模型，以及宿主报告的运行时模型；发生回退或缺少确认时，不得声称模型完全匹配。审阅代理保持 readonly: true；规划代理只有在明确派发最终整合任务时才能编辑文件。若无法按次调用切换模型，应为本次任务单独创建使用已批准升级模型的规划代理定义，不要静默修改默认值。
 
-Cursor's documented custom-agent frontmatter has no per-agent nested-dispatch deny field. These templates prohibit nested dispatch through role instructions only; the starter files do not enforce that boundary as a permission. Cursor documents that direct subagents may have Task access, while a subagent launched by another subagent cannot launch further descendants. Record role-level nested-dispatch enforcement as `LIMITED`; if strict enforcement is required, use a host with per-agent dispatch permissions or a verified host-level tool policy.
+Cursor 文档中的自定义代理 frontmatter 没有按代理禁止嵌套派发的权限字段。因此，这些模板只能通过角色提示词禁止嵌套派发，不能在权限层强制执行。Cursor 文档说明直接派发的子代理可能拥有 Task 权限，而子代理派生的下级代理不能继续创建后代。应将角色级嵌套派发控制标记为 LIMITED。若必须严格限制，应改用支持按代理配置派发权限的平台，或使用已验证的宿主级工具策略。
 
-Official docs:
-- https://prod.cursor.com/docs/skills
-- https://prod.cursor.com/docs/subagents
+官方文档：
+- Skills：https://prod.cursor.com/docs/skills
+- 子代理：https://prod.cursor.com/docs/subagents

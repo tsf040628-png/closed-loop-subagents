@@ -1,7 +1,7 @@
-# Adapter Directory
+# 平台适配说明
 
-Each adapter explains how to install the shared Skill and map its role contract to one host. Read only the adapter for the selected host.
+每份适配说明介绍如何安装通用 Skill，并将其角色约定映射到对应平台。只需阅读当前所用平台的说明。
 
-The host profile in skills/closed-loop-subagents/assets/config.example.yaml separates model identifiers and controls by platform. Keep personal settings out of the public repository. Store them in the host's user-level configuration when supported.
+skills/closed-loop-subagents/assets/config.example.yaml 中的平台配置会分别记录各平台的模型标识与控制项。请勿将个人配置提交到公开仓库；平台支持时，应将其保存到用户级配置位置。
 
-Do not mark an adapter fully supported until its release checks pass for Skill discovery, independent Planner/Executor/Reviewer dispatch, per-role model assignment, model upgrade routing, runtime observability reporting, and first-run configuration.
+只有在发布检查通过以下项目后，才能将适配器标记为“完整支持”：Skill 可被发现、规划/执行/审阅代理可独立派发、模型可按角色设置、模型升级路由有效、运行时信息可观测，以及首次配置流程可用。

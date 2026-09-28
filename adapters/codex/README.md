@@ -1,9 +1,11 @@
-# Codex Adapter
+# Codex 适配说明
 
-Install the repository as a skill-only plugin or install the directory `skills/closed-loop-subagents` as a Skill. A Skill package does not install or guarantee the runtime's subagent dispatcher; confirm that the selected Codex surface exposes independent subagent dispatch before starting a run.
+可以将整个仓库作为仅含 Skill 的插件安装，也可以单独安装 skills/closed-loop-subagents 目录。Skill 包本身不会安装或保证运行环境具备子代理调度器；开始任务前，请确认当前 Codex 界面支持独立派发子代理。
 
-The example profile uses gpt-6-luna / max for Planner, Executor, and Reviewer. The Reviewer may choose gpt-6-sol / medium for the Planner from corrective cycle 4 onward when it identifies a serious planning or route error.
+示例配置为规划、执行和审阅角色统一使用 gpt-6-luna / max。从第 4 轮修正起，如果审阅代理发现严重规划或路线错误，可选择将规划代理升级为 gpt-6-sol / medium。
 
-The Controller must use the active runtime's native dispatch arguments and pass the exact role model and effort. Do not substitute a same-model parent or weaker model assignment without the user's approval. Record accepted assignment evidence separately from actual runtime telemetry. If the user's profile requires runtime telemetry and the host does not expose it, pause and ask whether assignment-only evidence is acceptable.
+协调器必须使用当前运行环境原生的派发参数，并传入每个角色对应的模型和推理设置。未获用户同意时，不得悄悄改用父代理的模型或更弱的模型。应分别记录宿主接受的模型设置和运行时实际模型信息。若用户要求核验实际运行模型，而当前宿主无法提供该信息，应暂停派发并询问用户是否接受仅核验模型分配结果。
 
-See https://developers.openai.com/plugins/build/plugins and the core references.
+插件开发文档：https://developers.openai.com/plugins/build/plugins
+
+核心流程及参考资料见 skills/closed-loop-subagents/。
