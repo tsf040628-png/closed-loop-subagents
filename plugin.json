@@ -1,0 +1,6 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "closed-loop-subagents",
+  "version": "0.1.0",
+  "description": "Coordinate multi-step work through a Planner, Executor, and independent Reviewer with configurable host adapters and bounded feedback cycles."
+}

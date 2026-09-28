@@ -1,0 +1,128 @@
+schema_version: 1
+
+setup:
+  complete: false
+  host: null
+  surface: null
+  ask_on_first_use: true
+
+workflow:
+  max_feedback_cycles: 8
+  extension_requires_explicit_user_approval: true
+
+research:
+  github_prior_art: technical_tasks
+  minimum_stars: 1000
+  maximum_candidates: 5
+  read_only: true
+
+clarification:
+  use_grilling_when_available: true
+  fallback: built_in_frontier_questions
+  require_user_confirmation_before_resume: true
+
+models:
+  runtime_audit:
+    accepted_assignment_required: true
+    actual_runtime_attestation_required: false
+    report_unavailable_telemetry: true
+
+  hosts:
+    codex:
+      setup_required: true
+      role_defaults:
+        planner: {model: gpt-6-luna, reasoning_effort: max}
+        executor: {model: gpt-6-luna, reasoning_effort: max}
+        reviewer: {model: gpt-6-luna, reasoning_effort: max}
+      planner_escalation:
+        model: gpt-6-sol
+        reasoning_effort: medium
+        earliest_cycle: 4
+        decision_maker: reviewer
+        trigger: serious_planning_or_route_error
+
+    # Third-party catalogs vary by account and edition. Resolve these slots
+    # from the user's live host model picker during first-use setup.
+    claude-code:
+      setup_required: true
+      role_defaults:
+        planner: {model: inherit, effort: null}
+        executor: {model: inherit, effort: null}
+        reviewer: {model: inherit, effort: null}
+      planner_escalation:
+        model: null
+        effort: null
+        earliest_cycle: 4
+        decision_maker: reviewer
+
+    trae-work:
+      setup_required: true
+      surface_mode: ask_on_first_use
+      role_defaults:
+        planner: {model: current_session, reasoning_effort: current_session}
+        executor: {model: current_session, reasoning_effort: current_session}
+        reviewer: {model: current_session, reasoning_effort: current_session}
+      planner_escalation:
+        model: null
+        reasoning_effort: null
+        earliest_cycle: 4
+        decision_maker: reviewer
+
+    qoder:
+      setup_required: true
+      role_defaults:
+        planner: {model: current_session, reasoning_effort: current_session}
+        executor: {model: current_session, reasoning_effort: current_session}
+        reviewer: {model: current_session, reasoning_effort: current_session}
+      planner_escalation:
+        model: null
+        reasoning_effort: null
+        earliest_cycle: 4
+        decision_maker: reviewer
+
+    cursor:
+      setup_required: true
+      role_defaults:
+        planner: {model: inherit, reasoning_effort: inherit}
+        executor: {model: inherit, reasoning_effort: inherit}
+        reviewer: {model: inherit, reasoning_effort: inherit}
+      planner_escalation:
+        model: null
+        reasoning_effort: null
+        earliest_cycle: 4
+        decision_maker: reviewer
+
+    opencode:
+      setup_required: true
+      role_defaults:
+        planner: {model: current_session, reasoning_effort: current_session}
+        executor: {model: current_session, reasoning_effort: current_session}
+        reviewer: {model: current_session, reasoning_effort: current_session}
+      planner_escalation:
+        model: null
+        reasoning_effort: null
+        earliest_cycle: 4
+        decision_maker: reviewer
+
+    workbuddy:
+      setup_required: true
+      role_defaults:
+        planner: {model: current_session, reasoning_effort: current_session}
+        executor: {model: current_session, reasoning_effort: current_session}
+        reviewer: {model: current_session, reasoning_effort: current_session}
+      planner_escalation:
+        model: null
+        reasoning_effort: null
+        earliest_cycle: 4
+        decision_maker: reviewer
+
+finalization:
+  log_mode: compact
+  preserve:
+    - approved_plan
+    - final_deliverables
+    - verification_evidence
+    - reviewer_decisions
+    - model_assignment_records
+    - cleanup_receipt
+  output_language: match_user
