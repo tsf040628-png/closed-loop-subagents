@@ -17,17 +17,21 @@
 
 ## 角色关系
 
-[交互式架构图（需先启用 GitHub Pages）](https://tsf040628-png.github.io/closed-loop-subagents/?diagram=architecture)：悬停或键盘聚焦可突出关联角色与连线；点击模块可查看说明。
+下图直接显示在 README 中。点击图片可打开交互版，使用悬停或键盘聚焦突出关联角色与连线，并点击模块查看说明。
 
-备用矢量文件：[架构图 SVG](docs/diagrams/role-architecture.svg) · [模块直达说明](docs/diagrams/module-guide.md#用户输入)
+[![闭环子代理角色架构图：用户目标交给协调器，由规划、执行和审阅代理协作完成，并通过版本化共享状态交付结果](docs/diagrams/role-architecture.svg)](https://tsf040628-png.github.io/closed-loop-subagents/?diagram=architecture)
+
+[查看架构图模块说明](docs/diagrams/module-guide.md#用户输入) · [单独打开架构图 SVG](docs/diagrams/role-architecture.svg)
 
 ## 工作流与修正路由
 
-[交互式工作流图（需先启用 GitHub Pages）](https://tsf040628-png.github.io/closed-loop-subagents/?diagram=workflow)：悬停或键盘聚焦可追踪审阅与修正路径；点击模块可查看说明。
+下图同样直接显示在 README 中。点击图片可打开交互版，追踪审阅与修正路径并查看各模块说明。
 
-备用矢量文件：[工作流 SVG](docs/diagrams/workflow.svg) · 模块说明：[规划与批准](docs/diagrams/module-guide.md#规划与批准) · [逐步执行](docs/diagrams/module-guide.md#逐步执行) · [集成与闭环](docs/diagrams/module-guide.md#集成与闭环) · [全局修正预算](docs/diagrams/module-guide.md#全局修正预算) · [模型升级与轮次上限](docs/diagrams/module-guide.md#模型升级与轮次上限)
+[![闭环子代理工作流图：规划审阅、逐步执行、独立复审、缺陷修正、最终集成与全局八轮预算](docs/diagrams/workflow.svg)](https://tsf040628-png.github.io/closed-loop-subagents/?diagram=workflow)
 
-首次发布前，请在仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**。之后图表页面会由 `.github/workflows/deploy-diagrams.yml` 自动更新。
+[单独打开工作流 SVG](docs/diagrams/workflow.svg) · 模块说明：[规划与批准](docs/diagrams/module-guide.md#规划与批准) · [逐步执行](docs/diagrams/module-guide.md#逐步执行) · [集成与闭环](docs/diagrams/module-guide.md#集成与闭环) · [全局修正预算](docs/diagrams/module-guide.md#全局修正预算) · [模型升级与轮次上限](docs/diagrams/module-guide.md#模型升级与轮次上限)
+
+GitHub README 将图表以内嵌 SVG 预览显示；完整的悬停高亮、模块点击和详情面板由 [交互式图表页面](https://tsf040628-png.github.io/closed-loop-subagents/) 提供。修改 `docs/diagrams/` 后，`.github/workflows/deploy-diagrams.yml` 会自动更新在线页面。
 
 Reviewer 对计划、步骤和最终阶段使用各自的独立复审关卡。无论发现来自计划审阅、执行审阅、最终集成、清理清单还是闭环复核，都必须先通过图中的同一个全局 8 轮预算；最终阶段的缺陷不会直接退回 Planner 绕过预算。只有 Reviewer 判定属于严重规划或路线错误、且已进入第 4 个或之后的修正周期时，Reviewer 才可决定将 Planner 指派为 `gpt-6-sol / medium`；该分配不等于运行时模型已核验。
 
