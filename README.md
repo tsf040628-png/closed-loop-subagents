@@ -4,36 +4,33 @@
 
 ## 功能一览
 
-| 你需要做什么 | Skill 如何处理 | 你会看到什么 |
-|---|---|---|
-| 交代目标和完成标准 | Planner 把工作拆成步骤、验收标准、证据要求和风险；相关技术任务会先查找至少 1,000 Stars 的 GitHub 候选，并记录来源、适用性、适配方式和局限。 | 一份可审阅的计划，不会未经批准就开始执行。 |
-| 解决关键不确定性 | 若未决问题会影响范围、验收、依赖或权限，Planner 暂停并及时询问；有 `grilling` 技能时可用它组织澄清，否则直接向你提问，并等待答复和确认。 | 不把重要选择当作默认值或猜测。 |
-| 逐步完成任务 | 独立 Reviewer 先审计划；通过后，Executor 每次只执行一个已批准步骤，并提交实际产物和证据供 Reviewer 独立复核。 | 每一步都有明确的通过或退回结果。 |
-| 处理审阅发现 | `PLAN_GAP` 退回 Planner，`EXECUTION_DEFECT` 退回 Executor；最终集成、日志、清理和闭环发现退回 Planner。**所有发现都先经过同一个全局修正预算。** | 一条可追踪的修正与复审路径，最多 8 轮。 |
-| 完成交付和收尾 | Planner 集成最终文件、保留重要日志并提出清理清单；独立 Reviewer 批准清单后，Planner 才清理清单中的日志并提交回执，再由 Reviewer 做闭环复核。 | 最终文件、关键记录和清理证据。 |
-| 核对配置和进度 | 版本化共享状态记录计划、步骤、产物、证据、审阅结果和模型信息；模型分配与运行时模型遥测分开记录。 | 能区分“宿主接受了模型分配”和“宿主报告了实际运行模型”。 |
-
-每轮修正由一次纠正和随后一次独立复审组成。8 轮后仍有未解决项时，流程停止、报告剩余问题，并询问是否授权有界追加轮次；未获明确授权和记录前不会继续修正。
+| 环节 | 功能 |
+|---|---|
+| 规划 | Planner 拆解目标并定义验收标准；技术任务可先查找 GitHub 参考方案，关键不确定点及时向你确认。 |
+| 执行与审阅 | Reviewer 先审计划，再独立复核 Executor 按批准步骤提交的产物和证据。 |
+| 修正 | 发现退回对应角色处理，共用最多 8 轮预算；达到上限仍未完成时汇报并请求授权增加轮次。 |
+| 收尾 | Planner 整合产物并提出日志清理清单，经 Reviewer 复核后完成清理和闭环检查。 |
+| 状态记录 | 共享状态保存计划、产物、证据、审阅结论和模型分配信息。 |
 
 ## 角色关系
 
-下图直接显示在 README 中。点击图片可打开交互版，使用悬停或键盘聚焦突出关联角色与连线，并点击模块查看说明。
+点击图表可打开交互版。
 
-[![闭环子代理角色架构图：用户目标交给协调器，由规划、执行和审阅代理协作完成，并通过版本化共享状态交付结果](docs/diagrams/role-architecture.svg)](https://tsf040628-png.github.io/closed-loop-subagents/?diagram=architecture)
+[![闭环子代理架构图](docs/diagrams/role-architecture.svg)](https://tsf040628-png.github.io/closed-loop-subagents/?diagram=architecture)
 
-[查看架构图模块说明](docs/diagrams/module-guide.md#用户输入) · [单独打开架构图 SVG](docs/diagrams/role-architecture.svg)
+
 
 ## 工作流与修正路由
 
-下图同样直接显示在 README 中。点击图片可打开交互版，追踪审阅与修正路径并查看各模块说明。
 
-[![闭环子代理工作流图：规划审阅、逐步执行、独立复审、缺陷修正、最终集成与全局八轮预算](docs/diagrams/workflow.svg)](https://tsf040628-png.github.io/closed-loop-subagents/?diagram=workflow)
 
-[单独打开工作流 SVG](docs/diagrams/workflow.svg) · 模块说明：[规划与批准](docs/diagrams/module-guide.md#规划与批准) · [逐步执行](docs/diagrams/module-guide.md#逐步执行) · [集成与闭环](docs/diagrams/module-guide.md#集成与闭环) · [全局修正预算](docs/diagrams/module-guide.md#全局修正预算) · [模型升级与轮次上限](docs/diagrams/module-guide.md#模型升级与轮次上限)
+[![闭环子代理工作流图](docs/diagrams/workflow.svg)](https://tsf040628-png.github.io/closed-loop-subagents/?diagram=workflow)
 
-GitHub README 将图表以内嵌 SVG 预览显示；完整的悬停高亮、模块点击和详情面板由 [交互式图表页面](https://tsf040628-png.github.io/closed-loop-subagents/) 提供。修改 `docs/diagrams/` 后，`.github/workflows/deploy-diagrams.yml` 会自动更新在线页面。
 
-Reviewer 对计划、步骤和最终阶段使用各自的独立复审关卡。无论发现来自计划审阅、执行审阅、最终集成、清理清单还是闭环复核，都必须先通过图中的同一个全局 8 轮预算；最终阶段的缺陷不会直接退回 Planner 绕过预算。只有 Reviewer 判定属于严重规划或路线错误、且已进入第 4 个或之后的修正周期时，Reviewer 才可决定将 Planner 指派为 `gpt-6-sol / medium`；该分配不等于运行时模型已核验。
+
+
+
+
 
 ## 平台支持
 
@@ -49,7 +46,7 @@ Skill 文件格式本身不保证宿主提供独立子代理调度、分角色�
 | OpenCode | 原生 Skill 和自定义子代理；模型需按当前服务商使用 OpenCode 的 `provider/model` 标识。 |
 | WorkBuddy | 支持技能市场或本地技能包导入；是否提供独立子代理、角色模型设置和持久化取决于产品形态与版本。不能独立审阅时，使用手动桥接并标记 `MANUAL_REVIEW`。 |
 
-`MANUAL_REVIEW` 表示 Reviewer 需要在单独上下文中由用户手动运行和传递材料，不能宣称为原生独立子代理审阅。平台支持说明是适配指引，不代表已完成所有宿主版本的运行时兼容认证。
+平台支持说明是适配指引，不代表已完成所有宿主版本的运行时兼容认证。
 
 ## 安装
 
