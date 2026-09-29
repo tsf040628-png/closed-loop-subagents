@@ -1,6 +1,6 @@
 # 图表模块说明
 
-本页按两张图中的模块说明闭环子代理的输入、角色、状态和修正规则。可先打开[交互式双图页面](https://tsf040628-png.github.io/closed-loop-subagents/)，悬停或键盘聚焦时查看关联路径，点击模块后在说明面板中查看摘要并跳转到本页。也可直接查看[架构图 SVG](role-architecture.svg)和[工作流 SVG](workflow.svg)。
+本页按两张图中的模块说明闭环子代理的输入、角色、状态和修正规则。启用仓库 GitHub Pages 后，可先打开[交互式双图页面](https://tsf040628-png.github.io/closed-loop-subagents/)，悬停或键盘聚焦时查看关联路径，点击模块后在说明面板中查看摘要并跳转到本页。首次启用步骤见仓库 README。也可直接查看[架构图 SVG](role-architecture.svg)和[工作流 SVG](workflow.svg)。
 
 ## 架构图
 
@@ -53,3 +53,4 @@ Executor 每次完成一个获批步骤并提交证据，Reviewer 独立验收�
 ### 模型升级与轮次上限
 
 从第 4 轮起，若 Reviewer 判断存在严重规划或路线错误，可将 Planner 指派为 `gpt-6-sol / medium`；正常推进下一步不要求升级。达到 8 轮仍未完成时，流程停止并报告剩余问题，再询问用户是否授权有界追加轮次。
+

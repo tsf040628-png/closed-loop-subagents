@@ -17,15 +17,17 @@
 
 ## 角色关系
 
-[打开交互式架构图](https://tsf040628-png.github.io/closed-loop-subagents/?diagram=architecture)：悬停或键盘聚焦可突出关联角色与连线；点击模块可查看说明。
+[交互式架构图（需先启用 GitHub Pages）](https://tsf040628-png.github.io/closed-loop-subagents/?diagram=architecture)：悬停或键盘聚焦可突出关联角色与连线；点击模块可查看说明。
 
 备用矢量文件：[架构图 SVG](docs/diagrams/role-architecture.svg) · [模块直达说明](docs/diagrams/module-guide.md#用户输入)
 
 ## 工作流与修正路由
 
-[打开交互式工作流图](https://tsf040628-png.github.io/closed-loop-subagents/?diagram=workflow)：悬停或键盘聚焦可追踪审阅与修正路径；点击模块可查看说明。
+[交互式工作流图（需先启用 GitHub Pages）](https://tsf040628-png.github.io/closed-loop-subagents/?diagram=workflow)：悬停或键盘聚焦可追踪审阅与修正路径；点击模块可查看说明。
 
 备用矢量文件：[工作流 SVG](docs/diagrams/workflow.svg) · 模块说明：[规划与批准](docs/diagrams/module-guide.md#规划与批准) · [逐步执行](docs/diagrams/module-guide.md#逐步执行) · [集成与闭环](docs/diagrams/module-guide.md#集成与闭环) · [全局修正预算](docs/diagrams/module-guide.md#全局修正预算) · [模型升级与轮次上限](docs/diagrams/module-guide.md#模型升级与轮次上限)
+
+首次发布前，请在仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**。之后图表页面会由 `.github/workflows/deploy-diagrams.yml` 自动更新。
 
 Reviewer 对计划、步骤和最终阶段使用各自的独立复审关卡。无论发现来自计划审阅、执行审阅、最终集成、清理清单还是闭环复核，都必须先通过图中的同一个全局 8 轮预算；最终阶段的缺陷不会直接退回 Planner 绕过预算。只有 Reviewer 判定属于严重规划或路线错误、且已进入第 4 个或之后的修正周期时，Reviewer 才可决定将 Planner 指派为 `gpt-6-sol / medium`；该分配不等于运行时模型已核验。
 
@@ -71,4 +73,5 @@ git clone https://github.com/tsf040628-png/closed-loop-subagents.git
 ## 上游致谢与许可
 
 本项目参考了 [obra/superpowers 的 subagent-driven-development Skill](https://github.com/obra/superpowers/tree/main/skills/subagent-driven-development) 的流程展示方式，也参考了 [anthropics/skills](https://github.com/anthropics/skills) 的用户导向文档组织方式；本项目没有因此复制上游代码。详情见 [NOTICE.md](NOTICE.md)。本项目使用 MIT License，见 [LICENSE](LICENSE)。
+
 
