@@ -18,19 +18,9 @@
 
 [![闭环子代理架构图](docs/diagrams/role-architecture.svg)](https://tsf040628-png.github.io/closed-loop-subagents/?diagram=architecture)
 
-
-
 ## 工作流与修正路由
 
-
-
 [![闭环子代理工作流图](docs/diagrams/workflow.svg)](https://tsf040628-png.github.io/closed-loop-subagents/?diagram=workflow)
-
-
-
-
-
-
 
 ## 平台支持
 
@@ -74,5 +64,3 @@ git clone https://github.com/tsf040628-png/closed-loop-subagents.git
 ## 上游致谢与许可
 
 本项目参考了 [obra/superpowers 的 subagent-driven-development Skill](https://github.com/obra/superpowers/tree/main/skills/subagent-driven-development) 的流程展示方式，也参考了 [anthropics/skills](https://github.com/anthropics/skills) 的用户导向文档组织方式；本项目没有因此复制上游代码。详情见 [NOTICE.md](NOTICE.md)。本项目使用 MIT License，见 [LICENSE](LICENSE)。
-
-
