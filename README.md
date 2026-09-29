@@ -19,125 +19,82 @@
 
 ```mermaid
 flowchart LR
-    USER(["用户<br/>目标 · 约束 · 验收标准"]):::user
-    COORD["协调器<br/>状态推进 · 权限控制 · 全局轮次预算"]:::coord
+    %% 角色职责与版本化状态的读写关系
+    START(["用户<br/>目标 · 约束 · 验收标准"]):::user
+    COORD["协调器<br/>调度 · 状态推进 · 轮次预算"]:::coord
 
     subgraph ROLES["三个独立角色"]
         direction TB
-        PLANNER["Planner<br/>拆解计划 · 最终集成"]:::planner
-        EXECUTOR["Executor<br/>逐步执行 · 提交证据"]:::executor
-        REVIEWER["Reviewer<br/>独立审阅 · 分类发现"]:::reviewer
+        PLANNER["Planner<br/>规划 · 最终集成"]:::planner
+        EXECUTOR["Executor<br/>单步执行 · 提交证据"]:::executor
+        REVIEWER["Reviewer<br/>独立验收 · 分类发现"]:::reviewer
     end
 
     STATE[("版本化共享状态<br/>计划 · 产物 · 证据<br/>重要日志 · 审阅记录")]:::state
+    RESULT(["用户<br/>进度 · 最终结果"]):::user
 
-    USER -->|提交目标| COORD
-    COORD -->|计划任务| PLANNER
-    COORD -->|当前批准步骤| EXECUTOR
-    COORD -->|独立验收请求| REVIEWER
+    START --> COORD
+    COORD -->|派发 / 批准步骤| ROLES
+    ROLES -->|计划 · 证据 · 审阅结论| STATE
+    STATE -->|当前版本与审阅结论| COORD
+    COORD --> RESULT
 
-    PLANNER -->|计划 / 最终交付| STATE
-    EXECUTOR -->|产物 / 执行证据| STATE
-    STATE -->|待审材料与标准| REVIEWER
-    REVIEWER -->|审阅记录| STATE
-    REVIEWER -->|PASS / 分类发现| COORD
-    COORD -->|澄清 · 进度 · 结果| USER
-
-    classDef user fill:#fff7ed,stroke:#fb923c,color:#7c2d12,stroke-width:1.5px;
-    classDef coord fill:#eef2ff,stroke:#6366f1,color:#312e81,stroke-width:1.5px;
-    classDef planner fill:#f5f3ff,stroke:#8b5cf6,color:#4c1d95,stroke-width:1.5px;
-    classDef executor fill:#ecfeff,stroke:#06b6d4,color:#164e63,stroke-width:1.5px;
-    classDef reviewer fill:#fffbeb,stroke:#f59e0b,color:#78350f,stroke-width:1.5px;
-    classDef state fill:#eff6ff,stroke:#3b82f6,color:#1e3a8a,stroke-width:1.5px;
-    style ROLES fill:#f8fafc,stroke:#cbd5e1,stroke-width:1.5px,color:#334155
-    linkStyle default stroke:#94a3b8,stroke-width:1.5px
+    classDef user fill:#e8eef6,stroke:#50657d,color:#172b4d,stroke-width:1.3px;
+    classDef coord fill:#dbeafe,stroke:#1d4ed8,color:#172554,stroke-width:1.8px;
+    classDef planner fill:#f3e8ff,stroke:#7e22ce,color:#3b0764,stroke-width:1.3px;
+    classDef executor fill:#e0f2fe,stroke:#0369a1,color:#082f49,stroke-width:1.3px;
+    classDef reviewer fill:#fef3c7,stroke:#a16207,color:#422006,stroke-width:1.3px;
+    classDef state fill:#dcfce7,stroke:#15803d,color:#14532d,stroke-width:1.3px;
+    style ROLES fill:#f8fafc,stroke:#cbd5e1,stroke-width:1.1px,color:#334155
+    linkStyle default stroke:#64748b,stroke-width:1.4px
 ```
 
 ## 工作流与修正路由
 
 ```mermaid
-flowchart TD
+flowchart TB
+    %% 主线按规划、执行、集成闭环推进；发现修正见下方说明
     subgraph PLAN_STAGE["01 · 规划与批准"]
-        direction TB
-        GOAL(["用户目标"]):::user --> PLAN["Planner：相关技术任务查先例<br/>并拆解计划"]:::planner
-        PLAN --> UNCERTAIN{"存在影响范围、验收、依赖或权限的关键不确定性？"}:::decision
-        UNCERTAIN -->|是| ASK["使用 grilling 澄清<br/>等待用户答复与确认"]:::user
+        direction LR
+        GOAL(["用户目标"]):::user --> PLAN["Planner<br/>相关技术查先例 · 拆解计划"]:::planner
+        PLAN --> QUESTION{"关键不确定性？"}:::decision
+        QUESTION -->|需要澄清| ASK["grilling<br/>询问并等待确认"]:::user
         ASK --> PLAN
-        UNCERTAIN -->|否| PLAN_REVIEW["Reviewer：独立审计划"]:::reviewer
+        QUESTION -->|已确认| PLAN_REVIEW{"Reviewer<br/>审计划"}:::reviewer
     end
 
     subgraph EXEC_STAGE["02 · 逐步执行"]
-        direction TB
-        EXEC["Executor：只执行一个批准步骤"]:::executor
-        EVIDENCE["提交产物与实际证据"]:::artifact
-        EXEC_REVIEW["Reviewer：独立验收"]:::reviewer
+        direction LR
+        STEP["Executor<br/>执行一步 · 提交证据"]:::executor
+        STEP_REVIEW{"Reviewer<br/>验收证据"}:::reviewer
         MORE{"还有批准步骤？"}:::decision
-        EXEC --> EVIDENCE --> EXEC_REVIEW --> MORE
-        MORE -->|有| EXEC
+        STEP --> STEP_REVIEW --> MORE
+        MORE -->|有| STEP
     end
 
     subgraph FINAL_STAGE["03 · 集成与闭环"]
-        direction TB
-        INTEGRATE["Planner：集成最终文件<br/>保留重要日志并拟清理清单"]:::planner
-        FINAL_REVIEW["Reviewer：审最终文件并批准清理清单"]:::reviewer
-        CLEAN["Planner：按获批清单清理<br/>提交清理回执"]:::planner
-        CLOSURE["Reviewer：闭环复核"]:::reviewer
+        direction LR
+        INTEGRATE["Planner<br/>集成最终文件 · 保留重要日志"]:::planner
+        FINAL_REVIEW{"Reviewer<br/>审终稿 · 批准清理清单"}:::reviewer
+        CLEAN["Planner<br/>按获批清单清理 · 提交回执"]:::planner
+        CLOSURE{"Reviewer<br/>闭环复核"}:::reviewer
         DONE(["完成"]):::success
-        INTEGRATE --> FINAL_REVIEW
-        FINAL_REVIEW -->|通过且清单获批| CLEAN --> CLOSURE
-        CLOSURE -->|PASS| DONE
+        INTEGRATE --> FINAL_REVIEW -->|PASS| CLEAN --> CLOSURE -->|PASS| DONE
     end
 
-    PLAN_REVIEW -->|PASS| EXEC
-    MORE -->|没有| INTEGRATE
+    PLAN_STAGE -->|PASS| EXEC_STAGE
+    EXEC_STAGE -->|全部批准步骤 PASS| FINAL_STAGE
 
-    PLAN_REVIEW -. PLAN_GAP .-> FINDINGS
-    EXEC_REVIEW -. EXECUTION_DEFECT .-> FINDINGS
-    FINAL_REVIEW -. 集成或清单缺陷 .-> FINDINGS
-    CLOSURE -. 闭环缺陷 .-> FINDINGS
-
-    subgraph REWORK["统一修正通道 · 全局最多 8 轮"]
-        direction TB
-        FINDINGS["Reviewer 记录发现与类别"]:::finding
-        BUDGET{"尚有已授权修正轮次？<br/>默认上限 8；一轮 = 修正 + 独立复审"}:::decision
-        ROUTE{"按发现类别路由"}:::decision
-        UPGRADE_CHECK{"Reviewer 判断为严重规划 / 路线错误，<br/>且已进入第 4 轮或之后？"}:::decision
-        UPGRADE["将 Planner 指派为<br/>gpt-6-sol / medium"]:::upgrade
-        PLAN_FIX["Planner 修正计划"]:::planner
-        EXEC_FIX["Executor 修正当前步骤"]:::executor
-        FINAL_FIX["Planner 修正最终集成或清理"]:::planner
-        STOP["达到当前上限：停止修正<br/>向用户报告未完成项"]:::finding
-        EXTEND{"用户是否授权有界追加轮次？"}:::user
-        UNRESOLVED(["以未完成状态结束"]):::finding
-        FINDINGS --> BUDGET
-        BUDGET -->|有：计入一轮| ROUTE
-        BUDGET -->|已用尽授权额度| STOP --> EXTEND
-        EXTEND -->|授权并记录新增额度| BUDGET
-        EXTEND -->|不追加| UNRESOLVED
-        ROUTE -->|PLAN_GAP| UPGRADE_CHECK
-        UPGRADE_CHECK -->|Reviewer 决定升级| UPGRADE --> PLAN_FIX
-        UPGRADE_CHECK -->|不升级| PLAN_FIX
-        ROUTE -->|EXECUTION_DEFECT| EXEC_FIX
-        ROUTE -->|最终阶段缺陷| FINAL_FIX
-    end
-
-    PLAN_FIX --> PLAN_REVIEW
-    EXEC_FIX --> EXEC
-    FINAL_FIX --> INTEGRATE
-    classDef user fill:#fff7ed,stroke:#fb923c,color:#7c2d12,stroke-width:1.5px;
-    classDef planner fill:#f5f3ff,stroke:#8b5cf6,color:#4c1d95,stroke-width:1.5px;
-    classDef executor fill:#ecfeff,stroke:#06b6d4,color:#164e63,stroke-width:1.5px;
-    classDef reviewer fill:#fffbeb,stroke:#f59e0b,color:#78350f,stroke-width:1.5px;
-    classDef artifact fill:#f1f5f9,stroke:#64748b,color:#334155,stroke-width:1.5px;
-    classDef decision fill:#f8fafc,stroke:#64748b,color:#0f172a,stroke-width:1.5px;
-    classDef finding fill:#fff1f2,stroke:#f43f5e,color:#881337,stroke-width:1.5px;
-    classDef upgrade fill:#fef2f2,stroke:#ef4444,color:#7f1d1d,stroke-width:1.5px;
-    classDef success fill:#ecfdf5,stroke:#10b981,color:#064e3b,stroke-width:1.5px;
-    style PLAN_STAGE fill:#f8faff,stroke:#c7d2fe,stroke-width:1.5px,color:#3730a3
-    style EXEC_STAGE fill:#f0fdff,stroke:#a5f3fc,stroke-width:1.5px,color:#155e75
-    style FINAL_STAGE fill:#f8fafc,stroke:#cbd5e1,stroke-width:1.5px,color:#334155
-    style REWORK fill:#fff7f7,stroke:#fecdd3,stroke-width:1.5px,color:#881337
-    linkStyle default stroke:#94a3b8,stroke-width:1.5px
+    classDef user fill:#e8eef6,stroke:#50657d,color:#172b4d,stroke-width:1.3px;
+    classDef planner fill:#f3e8ff,stroke:#7e22ce,color:#3b0764,stroke-width:1.3px;
+    classDef executor fill:#e0f2fe,stroke:#0369a1,color:#082f49,stroke-width:1.3px;
+    classDef reviewer fill:#fef3c7,stroke:#a16207,color:#422006,stroke-width:1.3px;
+    classDef decision fill:#f8fafc,stroke:#475569,color:#0f172a,stroke-width:1.3px;
+    classDef success fill:#dcfce7,stroke:#15803d,color:#14532d,stroke-width:1.3px;
+    style PLAN_STAGE fill:#f8fafc,stroke:#cbd5e1,stroke-width:1.0px,color:#334155
+    style EXEC_STAGE fill:#f0f9ff,stroke:#bae6fd,stroke-width:1.0px,color:#0c4a6e
+    style FINAL_STAGE fill:#f8fafc,stroke:#cbd5e1,stroke-width:1.0px,color:#334155
+    linkStyle default stroke:#64748b,stroke-width:1.4px
 ```
 
 Reviewer 对计划、步骤和最终阶段使用各自的独立复审关卡。无论发现来自计划审阅、执行审阅、最终集成、清理清单还是闭环复核，都必须先通过图中的同一个全局 8 轮预算；最终阶段的缺陷不会直接退回 Planner 绕过预算。只有 Reviewer 判定属于严重规划或路线错误、且已进入第 4 个或之后的修正周期时，Reviewer 才可决定将 Planner 指派为 `gpt-6-sol / medium`；该分配不等于运行时模型已核验。
