@@ -16,7 +16,11 @@
       .node-body { font-size: 14px; fill: #53647A; }
       .small { font-size: 12px; fill: #64748B; }
       .connector { fill: none; stroke: #718096; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-      .hotspot { cursor: pointer; }
+      .hotspot { cursor: pointer; transform-box: fill-box; transform-origin: center; transition: opacity .2s ease, transform .2s ease, filter .2s ease; }
+      .hotspot > rect { transition: stroke .2s ease, stroke-width .2s ease, filter .2s ease; }
+      .hotspot:hover, .hotspot:focus-visible { filter: drop-shadow(0 7px 7px rgba(35, 77, 105, .16)); transform: translateY(-2px); }
+      .hotspot:hover > rect:first-of-type, .hotspot:focus-visible > rect:first-of-type { stroke: #4B9ABB; stroke-width: 2.5px; }
+      .connector { transition: stroke .22s ease, stroke-width .22s ease; }
     </style>
   </defs>
 
@@ -211,4 +215,3 @@
   <text x="854" y="983" font-size="12" fill="#53647A">停止并报告剩余问题，再询问用户是否授权有界追加轮次。</text>
   </a>
 </svg>
-

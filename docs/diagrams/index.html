@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f7fb">
+  <meta name="description" content="闭环子代理的交互式架构图和工作流图。悬停、键盘聚焦或点击模块查看说明。">
+  <title>闭环子代理 · 交互式流程图</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #142a43;
+      --muted: #62748a;
+      --line: #dbe4ee;
+      --surface: #ffffff;
+      --canvas: #f5f8fc;
+      --blue: #256d91;
+      --blue-soft: #e8f3f8;
+      --green: #28775f;
+      --amber: #946514;
+      --shadow: 0 18px 50px rgba(30, 54, 82, .08);
+      font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      min-width: 320px;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 82% 0%, rgba(207, 230, 242, .48), transparent 34rem),
+        #f4f7fb;
+    }
+    button, a { font: inherit; }
+    a { color: var(--blue); }
+    button:focus-visible, a:focus-visible {
+      outline: 3px solid #70b3d1;
+      outline-offset: 3px;
+    }
+    .page { width: min(100% - 48px, 1560px); margin: 0 auto; padding: 42px 0 56px; }
+    .masthead { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 46px; }
+    .brand { display: inline-flex; align-items: center; gap: 11px; color: var(--ink); text-decoration: none; font-weight: 750; letter-spacing: -.02em; }
+    .brand-mark { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 11px; color: white; background: #193e5b; box-shadow: 0 5px 13px #193e5b2c; }
+    .brand-mark svg { width: 19px; height: 19px; }
+    .mast-link { color: var(--muted); font-size: 14px; text-decoration: none; }
+    .mast-link:hover { color: var(--blue); }
+    .hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 28px; margin-bottom: 30px; }
+    .eyebrow { margin: 0 0 12px; color: var(--blue); font-size: 12px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
+    h1 { max-width: 880px; margin: 0; font-size: clamp(32px, 4.3vw, 58px); line-height: 1.12; letter-spacing: -.055em; }
+    .hero-copy { max-width: 780px; margin: 17px 0 0; color: var(--muted); font-size: 16px; line-height: 1.75; }
+    .stats { display: flex; align-items: center; gap: 9px; padding-bottom: 4px; }
+    .stat { min-width: 91px; padding: 11px 14px 10px; border: 1px solid #dce6ef; border-radius: 14px; background: #ffffffb8; text-align: center; }
+    .stat strong { display: block; font-size: 18px; line-height: 1.1; }
+    .stat span { display: block; margin-top: 5px; color: var(--muted); font-size: 11px; white-space: nowrap; }
+
+    .workspace { overflow: hidden; border: 1px solid #dce5ef; border-radius: 25px; background: var(--surface); box-shadow: var(--shadow); }
+    .workspace-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 22px 0; }
+    .tabs { display: flex; gap: 7px; padding: 5px; border: 1px solid #e1e8f0; border-radius: 14px; background: #f5f8fb; }
+    .tab { min-height: 39px; padding: 0 16px; border: 0; border-radius: 10px; color: #66788c; background: transparent; cursor: pointer; font-size: 14px; font-weight: 700; transition: background .18s ease, color .18s ease, box-shadow .18s ease; }
+    .tab:hover { color: var(--ink); }
+    .tab[aria-selected="true"] { color: #173d59; background: white; box-shadow: 0 2px 8px #203b5515; }
+    .view-label { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; white-space: nowrap; }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #36a57b; box-shadow: 0 0 0 4px #36a57b19; }
+    .canvas-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 22px 24px 15px; }
+    .canvas-title { margin: 0; font-size: 17px; font-weight: 750; letter-spacing: -.015em; }
+    .canvas-hint { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+    .toolbar { display: flex; align-items: center; gap: 5px; }
+    .tool-button { display: inline-grid; min-width: 34px; height: 34px; place-items: center; padding: 0 9px; border: 1px solid #e0e7ef; border-radius: 9px; color: #53677d; background: white; cursor: pointer; transition: background .16s ease, border-color .16s ease, transform .16s ease; }
+    .tool-button:hover { border-color: #b7d1df; background: #f1f8fb; transform: translateY(-1px); }
+    .zoom-value { min-width: 49px; color: #728398; font-size: 11px; text-align: center; font-variant-numeric: tabular-nums; }
+    .canvas-frame { position: relative; margin: 0 16px; overflow: auto; max-height: min(72vh, 850px); border: 1px solid #e3eaf1; border-radius: 17px; background-color: var(--canvas); background-image: radial-gradient(#cbd7e3 0.8px, transparent 0.8px); background-size: 19px 19px; scrollbar-color: #b9c9d7 transparent; scrollbar-width: thin; }
+    .diagram-root { min-width: 100%; min-height: 340px; display: flex; align-items: flex-start; justify-content: center; padding: 14px; }
+    .diagram-svg { display: block; flex: 0 0 auto; max-width: none; height: auto; overflow: visible; filter: drop-shadow(0 9px 18px rgba(37, 60, 83, .055)); }
+    .diagram-svg .hotspot { cursor: pointer; transform-box: fill-box; transform-origin: center; transition: opacity .2s ease, transform .2s ease, filter .2s ease; }
+    .diagram-svg .hotspot > rect { transition: stroke .2s ease, stroke-width .2s ease, filter .2s ease; }
+    .diagram-svg .hotspot:hover, .diagram-svg .hotspot:focus-visible, .diagram-svg .hotspot.is-active { filter: drop-shadow(0 7px 7px rgba(35, 77, 105, .16)); transform: translateY(-2px); }
+    .diagram-svg .hotspot:hover > rect:first-of-type, .diagram-svg .hotspot:focus-visible > rect:first-of-type, .diagram-svg .hotspot.is-active > rect:first-of-type { stroke: #4b9abb; stroke-width: 2.5px; }
+    .diagram-svg .hotspot.is-related > rect:first-of-type { stroke-width: 2px; }
+    .diagram-svg.is-focusing .hotspot.is-dimmed { opacity: .22; }
+    .diagram-svg .connector { transition: stroke .22s ease, stroke-width .22s ease, opacity .22s ease; opacity: .68; }
+    .diagram-svg .connector.is-related { stroke: #3689aa; stroke-width: 3px; opacity: 1; stroke-dasharray: 7 5; animation: flow-dash 1.25s linear infinite; }
+    @keyframes flow-dash { to { stroke-dashoffset: -24; } }
+    .load-state { align-self: center; max-width: 440px; padding: 28px; color: var(--muted); line-height: 1.7; text-align: center; }
+    .load-state strong { display: block; margin-bottom: 6px; color: var(--ink); }
+    .canvas-caption { display: flex; justify-content: space-between; gap: 18px; margin: 0 22px; padding: 11px 3px 14px; color: #8190a2; font-size: 11px; }
+
+    .inspector { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 20px; min-height: 102px; margin: 0 16px 16px; padding: 18px 21px; border: 1px solid #e1e9f0; border-radius: 16px; background: linear-gradient(110deg, #f8fbfd, #fff); }
+    .inspector-main { min-width: 0; }
+    .inspector-tag { margin-bottom: 6px; color: #52809b; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .inspector-title { margin: 0; font-size: 16px; font-weight: 760; }
+    .inspector-copy { margin: 6px 0 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .guide-link { display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0; padding: 10px 13px; border: 1px solid #d3e4ec; border-radius: 10px; color: #286984; background: #f5fbfd; font-size: 12px; font-weight: 700; text-decoration: none; transition: background .16s ease, transform .16s ease; }
+    .guide-link:hover { background: #e9f5f9; transform: translateY(-1px); }
+    .guide-link[hidden] { display: none; }
+
+    .below-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(270px, .55fr); gap: 18px; margin-top: 22px; }
+    .panel { padding: 21px 22px; border: 1px solid #dfe7ef; border-radius: 18px; background: #ffffffc9; }
+    .panel h2 { margin: 0; font-size: 14px; letter-spacing: -.01em; }
+    .panel p { margin: 7px 0 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
+    .module-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+    .module-chip { padding: 8px 11px; border: 1px solid #dce6ee; border-radius: 999px; color: #456078; background: white; cursor: pointer; font-size: 11px; transition: color .16s ease, border-color .16s ease, background .16s ease; }
+    .module-chip:hover, .module-chip[aria-pressed="true"] { border-color: #a9ccdc; color: #1f5f7b; background: #edf7fa; }
+    .inspiration { display: flex; flex-direction: column; }
+    .source-links { display: grid; gap: 8px; margin-top: 13px; }
+    .source-links a { font-size: 12px; font-weight: 700; text-decoration: none; }
+    .source-links a:hover { text-decoration: underline; }
+    .fineprint { margin-top: auto !important; padding-top: 13px; color: #8795a4 !important; font-size: 10px !important; }
+    footer { display: flex; justify-content: space-between; gap: 16px; margin-top: 25px; color: #8794a4; font-size: 11px; }
+    footer a { color: #697d91; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 900px) {
+      .page { width: min(100% - 32px, 1560px); padding-top: 25px; }
+      .hero { grid-template-columns: 1fr; align-items: start; gap: 20px; }
+      .stats { justify-content: flex-start; }
+      .below-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .page { width: calc(100% - 22px); padding-top: 16px; }
+      .masthead { margin-bottom: 29px; }
+      .mast-link { font-size: 11px; }
+      h1 { font-size: 34px; }
+      .hero-copy { font-size: 14px; }
+      .stat { min-width: 78px; padding-inline: 9px; }
+      .workspace { border-radius: 18px; }
+      .workspace-top { align-items: flex-start; padding: 13px 12px 0; }
+      .tabs { gap: 2px; padding: 3px; }
+      .tab { min-height: 36px; padding: 0 9px; font-size: 11px; }
+      .view-label { gap: 6px; padding-top: 10px; font-size: 10px; }
+      .canvas-heading { align-items: flex-start; padding: 17px 13px 12px; }
+      .canvas-title { font-size: 14px; }
+      .canvas-hint { max-width: 210px; font-size: 10px; line-height: 1.45; }
+      .canvas-frame { margin: 0 8px; max-height: 62vh; }
+      .diagram-root { justify-content: flex-start; padding: 8px; }
+      .canvas-caption { margin: 0 12px; font-size: 9px; }
+      .inspector { grid-template-columns: 1fr; gap: 13px; margin: 0 8px 8px; padding: 15px; }
+      .guide-link { justify-self: start; }
+      .panel { padding: 17px; }
+      footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="masthead">
+      <a class="brand" href="https://github.com/tsf040628-png/closed-loop-subagents" aria-label="闭环子代理 GitHub 仓库">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 7.5h6.5a3 3 0 0 1 3 3V12m0 0a3 3 0 0 0 3 3H20M14.5 12a3 3 0 0 1-3 3H5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="5" cy="7.5" r="2" fill="currentColor"/><circle cx="20" cy="15" r="2" fill="currentColor"/><circle cx="5" cy="15" r="2" fill="currentColor"/></svg></span>
+        <span>闭环子代理</span>
+      </a>
+      <a class="mast-link" href="https://github.com/tsf040628-png/closed-loop-subagents/blob/main/README.md">返回项目说明 <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <section class="hero" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">Interactive system map</p>
+        <h1 id="page-title">计划、执行、审阅，<br>直到证据闭环。</h1>
+        <p class="hero-copy">沿着流程查看角色怎样协作。悬停或键盘聚焦节点可追踪关联路径；点击节点可固定说明并打开对应文档。</p>
+      </div>
+      <div class="stats" aria-label="流程摘要">
+        <div class="stat"><strong>03</strong><span>独立角色</span></div>
+        <div class="stat"><strong>08</strong><span>最大修正轮次</span></div>
+        <div class="stat"><strong>01</strong><span>全局预算</span></div>
+      </div>
+    </section>
+
+    <section class="workspace" aria-label="交互式闭环流程图">
+      <div class="workspace-top">
+        <div class="tabs" role="tablist" aria-label="选择图表">
+          <button class="tab" id="tab-architecture" type="button" role="tab" aria-selected="true" aria-controls="diagram-panel" data-diagram="architecture">角色架构</button>
+          <button class="tab" id="tab-workflow" type="button" role="tab" aria-selected="false" aria-controls="diagram-panel" data-diagram="workflow">工作流程</button>
+        </div>
+        <span class="view-label"><span class="live-dot" aria-hidden="true"></span>可交互视图</span>
+      </div>
+
+      <div id="diagram-panel" role="tabpanel" aria-labelledby="tab-architecture">
+        <div class="canvas-heading">
+          <div>
+            <h2 class="canvas-title" id="diagram-title">角色如何组成闭环</h2>
+            <p class="canvas-hint" id="diagram-hint">悬停、聚焦或点击一个模块；拖动滚动条或使用缩放控制查看细节。</p>
+          </div>
+          <div class="toolbar" aria-label="图表缩放控制">
+            <button class="tool-button" type="button" id="zoom-out" aria-label="缩小图表">−</button>
+            <span class="zoom-value" id="zoom-value" aria-live="polite">适合窗口</span>
+            <button class="tool-button" type="button" id="zoom-in" aria-label="放大图表">+</button>
+            <button class="tool-button" type="button" id="zoom-fit" aria-label="适合窗口">适合窗口</button>
+          </div>
+        </div>
+        <div class="canvas-frame" id="canvas-frame">
+          <div class="diagram-root" id="diagram-root" aria-live="polite">
+            <div class="load-state"><strong>正在载入图表…</strong>交互版直接读取仓库中的 SVG 源文件。</div>
+          </div>
+        </div>
+        <div class="canvas-caption"><span>节点和路径均可聚焦；点击节点可锁定当前说明。</span><span>按 Esc 取消固定选择</span></div>
+      </div>
+
+      <section class="inspector" id="inspector" aria-live="polite" aria-atomic="true">
+        <div class="inspector-main">
+          <div class="inspector-tag" id="inspector-tag">MODULE INSPECTOR</div>
+          <h3 class="inspector-title" id="inspector-title">选择图中的一个模块</h3>
+          <p class="inspector-copy" id="inspector-copy">悬停时这里会显示模块摘要；点击图中节点或下方模块标签，可以固定说明。</p>
+        </div>
+        <a class="guide-link" id="guide-link" href="#" hidden>阅读完整说明 <span aria-hidden="true">↗</span></a>
+      </section>
+    </section>
+
+    <div class="below-grid">
+      <section class="panel" aria-labelledby="modules-title">
+        <h2 id="modules-title">按模块查看</h2>
+        <p>选择标签会切换到相关图表并定位该模块。</p>
+        <div class="module-list" id="module-list"></div>
+      </section>
+      <aside class="panel inspiration" aria-labelledby="inspiration-title">
+        <h2 id="inspiration-title">交互设计参考</h2>
+        <p>采用节点与连线分离、相关路径高亮、聚焦后再看详情的交互思路。页面使用原生 SVG、CSS 和 JavaScript 实现，不加载第三方脚本或字体。</p>
+        <div class="source-links">
+          <a href="https://github.com/xyflow/xyflow" target="_blank" rel="noopener noreferrer">xyflow · 节点、连线与视口控制 ↗</a>
+          <a href="https://github.com/nypl-spacetime/interactive-architecture" target="_blank" rel="noopener noreferrer">NYPL · SVG 组件热点与详情面板 ↗</a>
+        </div>
+        <p class="fineprint">只借鉴交互设计模式；未复制项目代码或引入它们的运行时依赖。</p>
+      </aside>
+    </div>
+
+    <footer>
+      <span>闭环子代理 · 中文交互式文档</span>
+      <span><a href="role-architecture.svg">架构图 SVG</a> · <a href="workflow.svg">工作流 SVG</a> · <a href="module-guide.md">模块说明源文件</a></span>
+    </footer>
+  </main>
+
+  <script>
+    "use strict";
+
+    const repoGuide = "https://github.com/tsf040628-png/closed-loop-subagents/blob/main/docs/diagrams/module-guide.md";
+    const diagrams = {
+      architecture: {
+        src: "role-architecture.svg",
+        title: "角色如何组成闭环",
+        label: "三角色协作架构图",
+        edges: [
+          ["input", "coordinator"], ["coordinator", "delivery"],
+          ["coordinator", "planner"], ["coordinator", "executor"], ["coordinator", "reviewer"],
+          ["planner", "state"], ["executor", "state"], ["reviewer", "state"], ["state", "coordinator"]
+        ]
+      },
+      workflow: {
+        src: "workflow.svg",
+        title: "每一步怎样通过审阅",
+        label: "闭环工作流与修正路由图",
+        edges: [
+          ["input", "planning"], ["planning", "reviewer"], ["executor", "reviewer"],
+          ["executor", "reviewer"], ["planner", "reviewer"], ["planner", "reviewer"],
+          ["planner", "reviewer"], ["planning", "execution"], ["execution", "integration"],
+          ["reviewer", "budget"], ["budget", "planner", "executor"], ["budget", "reviewer"]
+        ]
+      }
+    };
+
+    const modules = {
+      input: { name: "用户目标与约束", group: "架构 · 输入", text: "用户提供目标、约束和可判断的完成标准。若范围、验收、依赖或权限存在关键不确定性，Planner 应先询问并等待确认。", guide: "用户输入", diagram: "architecture" },
+      coordinator: { name: "协调器", group: "架构 · 调度", text: "协调器读取版本化共享状态，按当前阶段派发 Planner、Executor 或 Reviewer，并管理权限边界和全局修正轮次。", guide: "协调器", diagram: "architecture" },
+      planner: { name: "规划代理 Planner", group: "架构 · 规划", text: "Planner 将目标拆成步骤、验收标准、证据要求和风险；通过审阅后再规划最终文件整合、重要日志保留和获批的清理工作。", guide: "规划代理", diagram: "architecture" },
+      executor: { name: "执行代理 Executor", group: "架构 · 执行", text: "Executor 每次只执行一个已批准步骤，并提交实际产物与可核验证据。Reviewer 通过后，流程才推进到下一步。", guide: "执行代理", diagram: "architecture" },
+      reviewer: { name: "审阅代理 Reviewer", group: "架构 · 独立把关", text: "Reviewer 对照验收标准独立审计划、每项产物和最终收尾；将发现分类并决定是否需要升级 Planner 模型。", guide: "审阅代理", diagram: "architecture" },
+      state: { name: "版本化共享状态", group: "架构 · 记录", text: "版本化记录计划、步骤、产物、证据、审阅结果、重要日志和模型信息。模型分配与运行时模型遥测分开保存。", guide: "版本化共享状态", diagram: "architecture" },
+      delivery: { name: "交付结果", group: "架构 · 交付", text: "闭环复核通过后，协调器向用户返回进度、最终文件和关键记录；仍有未解决项时，明确报告而不标记为完成。", guide: "交付结果", diagram: "architecture" },
+      planning: { name: "规划与批准", group: "工作流 · 阶段 01", text: "Planner 完成拆解和验收标准后，由 Reviewer 独立审计划。只有计划通过、关键不确定项已获确认，才能开始执行。", guide: "规划与批准", diagram: "workflow" },
+      execution: { name: "逐步执行", group: "工作流 · 阶段 02", text: "Executor 每次完成一个获批步骤并提交证据，Reviewer 独立验收。当前步骤通过后继续下一项；出现缺陷则进入统一修正预算。", guide: "逐步执行", diagram: "workflow" },
+      integration: { name: "集成与闭环", group: "工作流 · 阶段 03", text: "步骤全部通过后，Planner 集成最终文件并保留重要日志。Reviewer 批准清理清单后，Planner 执行清理并提交回执，最后再做闭环复核。", guide: "集成与闭环", diagram: "workflow" },
+      budget: { name: "全局修正预算", group: "工作流 · 统一路由", text: "所有发现共用最多 8 轮修正预算；每轮含一次纠正和一次独立复审。规划或收尾问题回到 Planner，执行缺陷回到 Executor。", guide: "全局修正预算", diagram: "workflow" },
+      upgrade: { name: "模型升级与轮次上限", group: "工作流 · 边界", text: "Reviewer 可从第 4 轮起根据严重规划或路线错误决定是否将 Planner 指派为 gpt-6-sol / medium。达到 8 轮仍未完成时停止并报告，再询问是否追加有界轮次。", guide: "模型升级与轮次上限", diagram: "workflow" }
+    };
+
+    const fragmentMap = {
+      "用户输入": "input", "协调器": "coordinator", "交付结果": "delivery",
+      "规划代理": "planner", "执行代理": "executor", "审阅代理": "reviewer",
+      "版本化共享状态": "state", "规划与批准": "planning", "逐步执行": "execution",
+      "集成与闭环": "integration", "全局修正预算": "budget", "模型升级与轮次上限": "upgrade"
+    };
+    const relatedByModule = {
+      input: ["coordinator", "planning", "planner"],
+      coordinator: ["input", "planner", "executor", "reviewer", "state", "delivery"],
+      planner: ["coordinator", "reviewer", "state", "planning", "integration", "budget", "upgrade"],
+      executor: ["coordinator", "reviewer", "state", "execution", "budget"],
+      reviewer: ["coordinator", "planner", "executor", "state", "planning", "execution", "integration", "budget", "upgrade"],
+      state: ["coordinator", "planner", "executor", "reviewer"],
+      delivery: ["coordinator", "integration", "reviewer"],
+      planning: ["input", "planner", "reviewer", "execution", "budget", "upgrade"],
+      execution: ["executor", "reviewer", "integration", "budget"],
+      integration: ["planner", "reviewer", "delivery", "budget", "upgrade"],
+      budget: ["planner", "executor", "reviewer", "planning", "execution", "integration", "upgrade"],
+      upgrade: ["planner", "reviewer", "budget"]
+    };
+
+    const frame = document.getElementById("canvas-frame");
+    const diagramRoot = document.getElementById("diagram-root");
+    const titleNode = document.getElementById("diagram-title");
+    const panelNode = document.getElementById("diagram-panel");
+    const zoomValue = document.getElementById("zoom-value");
+    let currentDiagram = "architecture";
+    let currentSvg = null;
+    let selectedKey = null;
+    let zoom = 1;
+    let fitZoom = 1;
+    let baseWidth = 0;
+    let baseHeight = 0;
+
+    function setInspector(key) {
+      const data = modules[key];
+      const tag = document.getElementById("inspector-tag");
+      const title = document.getElementById("inspector-title");
+      const copy = document.getElementById("inspector-copy");
+      const link = document.getElementById("guide-link");
+      if (!data) {
+        tag.textContent = "MODULE INSPECTOR";
+        title.textContent = "选择图中的一个模块";
+        copy.textContent = "悬停时这里会显示模块摘要；点击图中节点或下方模块标签，可以固定说明。";
+        link.hidden = true;
+        link.removeAttribute("href");
+        return;
+      }
+      tag.textContent = data.group;
+      title.textContent = data.name;
+      copy.textContent = data.text;
+      link.href = repoGuide + "#" + encodeURIComponent(data.guide);
+      link.hidden = false;
+    }
+
+    function applyZoom(nextZoom, label) {
+      if (!currentSvg) return;
+      zoom = Math.min(1.8, Math.max(.55, nextZoom));
+      currentSvg.style.width = Math.round(baseWidth * zoom) + "px";
+      currentSvg.style.height = Math.round(baseHeight * zoom) + "px";
+      zoomValue.textContent = label || Math.round(zoom * 100) + "%";
+    }
+
+    function fitDiagram() {
+      if (!currentSvg) return;
+      fitZoom = Math.min(1, (frame.clientWidth - 30) / baseWidth);
+      applyZoom(fitZoom, "适合窗口");
+      frame.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+    }
+
+    function setFocus(key, persist) {
+      if (!currentSvg) return;
+      if (persist) selectedKey = selectedKey === key ? null : key;
+      const activeKey = persist ? selectedKey : (key || selectedKey);
+      const related = new Set(activeKey ? (relatedByModule[activeKey] || []) : []);
+      if (activeKey) related.add(activeKey);
+      currentSvg.classList.toggle("is-focusing", Boolean(activeKey));
+      currentSvg.querySelectorAll(".hotspot[data-module]").forEach(function (node) {
+        const nodeKey = node.dataset.module;
+        const isActive = nodeKey === activeKey;
+        const isRelated = related.has(nodeKey);
+        node.classList.toggle("is-active", isActive);
+        node.classList.toggle("is-related", isRelated && !isActive);
+        node.classList.toggle("is-dimmed", Boolean(activeKey) && !isRelated);
+        node.setAttribute("aria-pressed", String(isActive && Boolean(selectedKey)));
+      });
+      currentSvg.querySelectorAll(".connector[data-links]").forEach(function (edge) {
+        const endpoints = edge.dataset.links.split(" ");
+        edge.classList.toggle("is-related", Boolean(activeKey) && endpoints.some(function (name) { return related.has(name); }));
+      });
+      document.querySelectorAll(".module-chip").forEach(function (chip) {
+        chip.setAttribute("aria-pressed", String(chip.dataset.key === selectedKey));
+      });
+      setInspector(key || selectedKey);
+    }
+
+    function keyFromHref(href) {
+      const hash = href.split("#").pop() || "";
+      let fragment = hash;
+      try { fragment = decodeURIComponent(hash); } catch (_error) { /* Keep the original fragment. */ }
+      return fragmentMap[fragment] || null;
+    }
+
+    async function loadDiagram(name) {
+      currentDiagram = name;
+      selectedKey = null;
+      currentSvg = null;
+      const config = diagrams[name];
+      titleNode.textContent = config.title;
+      panelNode.setAttribute("aria-labelledby", name === "architecture" ? "tab-architecture" : "tab-workflow");
+      document.querySelectorAll(".tab").forEach(function (tab) {
+        tab.setAttribute("aria-selected", String(tab.dataset.diagram === name));
+      });
+      diagramRoot.innerHTML = "<div class=\"load-state\"><strong>正在载入图表…</strong>交互版直接读取仓库中的 SVG 源文件。</div>";
+      setInspector(null);
+      try {
+        const response = await fetch(config.src, { cache: "no-cache" });
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        const source = await response.text();
+        const parsed = new DOMParser().parseFromString(source, "image/svg+xml");
+        if (parsed.querySelector("parsererror")) throw new Error("SVG 无法解析");
+        const svg = document.importNode(parsed.documentElement, true);
+        svg.classList.add("diagram-svg");
+        svg.setAttribute("role", "img");
+        svg.setAttribute("aria-label", config.label);
+        svg.querySelectorAll("a.hotspot").forEach(function (node) {
+          const key = keyFromHref(node.getAttribute("href") || "");
+          if (!key) return;
+          node.dataset.module = key;
+          node.setAttribute("role", "button");
+          node.setAttribute("tabindex", "0");
+          node.setAttribute("aria-pressed", "false");
+          node.addEventListener("click", function (event) {
+            event.preventDefault();
+            setFocus(key, true);
+          });
+          node.addEventListener("pointerenter", function () { setFocus(key, false); });
+          node.addEventListener("pointerleave", function () { setFocus(null, false); });
+          node.addEventListener("focus", function () { setFocus(key, false); });
+          node.addEventListener("blur", function () { setFocus(null, false); });
+        });
+        svg.querySelectorAll("path.connector").forEach(function (edge, index) {
+          if (config.edges[index]) edge.dataset.links = config.edges[index].join(" ");
+        });
+        diagramRoot.replaceChildren(svg);
+        currentSvg = svg;
+        baseWidth = svg.viewBox.baseVal.width || Number(svg.getAttribute("width"));
+        baseHeight = svg.viewBox.baseVal.height || Number(svg.getAttribute("height"));
+        requestAnimationFrame(fitDiagram);
+      } catch (error) {
+        const message = document.createElement("div");
+        message.className = "load-state";
+        const heading = document.createElement("strong");
+        heading.textContent = "图表载入失败";
+        const detail = document.createElement("span");
+        detail.textContent = "请通过 GitHub Pages 或本地静态服务器打开本页。读取 SVG 失败：" + String(error.message);
+        message.append(heading, detail);
+        diagramRoot.replaceChildren(message);
+      }
+    }
+
+    const moduleList = document.getElementById("module-list");
+    Object.keys(modules).forEach(function (key) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "module-chip";
+      button.dataset.key = key;
+      button.setAttribute("aria-pressed", "false");
+      button.textContent = modules[key].name;
+      button.addEventListener("click", async function () {
+        if (currentDiagram !== modules[key].diagram) {
+          await loadDiagram(modules[key].diagram);
+          requestAnimationFrame(function () { setFocus(key, true); });
+        } else {
+          setFocus(key, true);
+        }
+      });
+      moduleList.appendChild(button);
+    });
+
+    document.querySelectorAll(".tab").forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        if (tab.dataset.diagram !== currentDiagram) loadDiagram(tab.dataset.diagram);
+      });
+    });
+    document.getElementById("zoom-in").addEventListener("click", function () { applyZoom(zoom + .15); });
+    document.getElementById("zoom-out").addEventListener("click", function () { applyZoom(zoom - .15); });
+    document.getElementById("zoom-fit").addEventListener("click", fitDiagram);
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && selectedKey) {
+        selectedKey = null;
+        setFocus(null, false);
+        if (currentSvg) currentSvg.querySelectorAll(".hotspot").forEach(function (node) { node.setAttribute("aria-pressed", "false"); });
+      }
+    });
+    window.addEventListener("resize", function () { if (currentSvg && zoomValue.textContent === "适合窗口") fitDiagram(); });
+    const requestedDiagram = new URLSearchParams(window.location.search).get("diagram");
+    if (requestedDiagram && Object.prototype.hasOwnProperty.call(diagrams, requestedDiagram)) currentDiagram = requestedDiagram;
+    loadDiagram(currentDiagram);
+  </script>
+</body>
+</html>
