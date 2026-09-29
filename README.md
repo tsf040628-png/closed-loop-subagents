@@ -17,85 +17,11 @@
 
 ## 角色关系
 
-```mermaid
-flowchart LR
-    %% 角色职责与版本化状态的读写关系
-    START(["用户<br/>目标 · 约束 · 验收标准"]):::user
-    COORD["协调器<br/>调度 · 状态推进 · 轮次预算"]:::coord
-
-    subgraph ROLES["三个独立角色"]
-        direction TB
-        PLANNER["Planner<br/>规划 · 最终集成"]:::planner
-        EXECUTOR["Executor<br/>单步执行 · 提交证据"]:::executor
-        REVIEWER["Reviewer<br/>独立验收 · 分类发现"]:::reviewer
-    end
-
-    STATE[("版本化共享状态<br/>计划 · 产物 · 证据<br/>重要日志 · 审阅记录")]:::state
-    RESULT(["用户<br/>进度 · 最终结果"]):::user
-
-    START --> COORD
-    COORD -->|派发 / 批准步骤| ROLES
-    ROLES -->|计划 · 证据 · 审阅结论| STATE
-    STATE -->|当前版本与审阅结论| COORD
-    COORD --> RESULT
-
-    classDef user fill:#e8eef6,stroke:#50657d,color:#172b4d,stroke-width:1.3px;
-    classDef coord fill:#dbeafe,stroke:#1d4ed8,color:#172554,stroke-width:1.8px;
-    classDef planner fill:#f3e8ff,stroke:#7e22ce,color:#3b0764,stroke-width:1.3px;
-    classDef executor fill:#e0f2fe,stroke:#0369a1,color:#082f49,stroke-width:1.3px;
-    classDef reviewer fill:#fef3c7,stroke:#a16207,color:#422006,stroke-width:1.3px;
-    classDef state fill:#dcfce7,stroke:#15803d,color:#14532d,stroke-width:1.3px;
-    style ROLES fill:#f8fafc,stroke:#cbd5e1,stroke-width:1.1px,color:#334155
-    linkStyle default stroke:#64748b,stroke-width:1.4px
-```
+![闭环子代理的角色关系图（SVG）](docs/diagrams/role-architecture.svg)
 
 ## 工作流与修正路由
 
-```mermaid
-flowchart TB
-    %% 主线按规划、执行、集成闭环推进；发现修正见下方说明
-    subgraph PLAN_STAGE["01 · 规划与批准"]
-        direction LR
-        GOAL(["用户目标"]):::user --> PLAN["Planner<br/>相关技术查先例 · 拆解计划"]:::planner
-        PLAN --> QUESTION{"关键不确定性？"}:::decision
-        QUESTION -->|需要澄清| ASK["grilling<br/>询问并等待确认"]:::user
-        ASK --> PLAN
-        QUESTION -->|已确认| PLAN_REVIEW{"Reviewer<br/>审计划"}:::reviewer
-    end
-
-    subgraph EXEC_STAGE["02 · 逐步执行"]
-        direction LR
-        STEP["Executor<br/>执行一步 · 提交证据"]:::executor
-        STEP_REVIEW{"Reviewer<br/>验收证据"}:::reviewer
-        MORE{"还有批准步骤？"}:::decision
-        STEP --> STEP_REVIEW --> MORE
-        MORE -->|有| STEP
-    end
-
-    subgraph FINAL_STAGE["03 · 集成与闭环"]
-        direction LR
-        INTEGRATE["Planner<br/>集成最终文件 · 保留重要日志"]:::planner
-        FINAL_REVIEW{"Reviewer<br/>审终稿 · 批准清理清单"}:::reviewer
-        CLEAN["Planner<br/>按获批清单清理 · 提交回执"]:::planner
-        CLOSURE{"Reviewer<br/>闭环复核"}:::reviewer
-        DONE(["完成"]):::success
-        INTEGRATE --> FINAL_REVIEW -->|PASS| CLEAN --> CLOSURE -->|PASS| DONE
-    end
-
-    PLAN_STAGE -->|PASS| EXEC_STAGE
-    EXEC_STAGE -->|全部批准步骤 PASS| FINAL_STAGE
-
-    classDef user fill:#e8eef6,stroke:#50657d,color:#172b4d,stroke-width:1.3px;
-    classDef planner fill:#f3e8ff,stroke:#7e22ce,color:#3b0764,stroke-width:1.3px;
-    classDef executor fill:#e0f2fe,stroke:#0369a1,color:#082f49,stroke-width:1.3px;
-    classDef reviewer fill:#fef3c7,stroke:#a16207,color:#422006,stroke-width:1.3px;
-    classDef decision fill:#f8fafc,stroke:#475569,color:#0f172a,stroke-width:1.3px;
-    classDef success fill:#dcfce7,stroke:#15803d,color:#14532d,stroke-width:1.3px;
-    style PLAN_STAGE fill:#f8fafc,stroke:#cbd5e1,stroke-width:1.0px,color:#334155
-    style EXEC_STAGE fill:#f0f9ff,stroke:#bae6fd,stroke-width:1.0px,color:#0c4a6e
-    style FINAL_STAGE fill:#f8fafc,stroke:#cbd5e1,stroke-width:1.0px,color:#334155
-    linkStyle default stroke:#64748b,stroke-width:1.4px
-```
+![闭环子代理的工作流与修正路由图（SVG）](docs/diagrams/workflow.svg)
 
 Reviewer 对计划、步骤和最终阶段使用各自的独立复审关卡。无论发现来自计划审阅、执行审阅、最终集成、清理清单还是闭环复核，都必须先通过图中的同一个全局 8 轮预算；最终阶段的缺陷不会直接退回 Planner 绕过预算。只有 Reviewer 判定属于严重规划或路线错误、且已进入第 4 个或之后的修正周期时，Reviewer 才可决定将 Planner 指派为 `gpt-6-sol / medium`；该分配不等于运行时模型已核验。
 
@@ -141,4 +67,5 @@ git clone https://github.com/tsf040628-png/closed-loop-subagents.git
 ## 上游致谢与许可
 
 本项目参考了 [obra/superpowers 的 subagent-driven-development Skill](https://github.com/obra/superpowers/tree/main/skills/subagent-driven-development) 的流程展示方式，也参考了 [anthropics/skills](https://github.com/anthropics/skills) 的用户导向文档组织方式；本项目没有因此复制上游代码。详情见 [NOTICE.md](NOTICE.md)。本项目使用 MIT License，见 [LICENSE](LICENSE)。
+
 

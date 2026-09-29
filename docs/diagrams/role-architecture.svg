@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="820" viewBox="0 0 1440 820" role="img" aria-labelledby="title desc">
+  <title id="title">闭环子代理的角色关系图</title>
+  <desc id="desc">用户将目标交给协调器。协调器调度规划、执行和审阅三个独立角色。角色把计划、产物、证据和审阅结论写入版本化共享状态，协调器读取状态并推进流程，最后交付结果。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#718096"/>
+    </marker>
+    <style>
+      text { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; }
+      .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 1.8px; fill: #64748B; }
+      .title { font-size: 32px; font-weight: 700; fill: #172B4D; }
+      .subtitle { font-size: 17px; fill: #58677D; }
+      .card-title { font-size: 21px; font-weight: 700; fill: #172B4D; }
+      .body { font-size: 15px; fill: #53647A; }
+      .small { font-size: 13px; fill: #607086; }
+      .role-title { font-size: 20px; font-weight: 700; }
+      .role-body { font-size: 15px; fill: #44546A; }
+      .connector { fill: none; stroke: #718096; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <rect width="1440" height="820" rx="28" fill="#F5F7FB"/>
+  <text x="72" y="58" class="eyebrow">闭环子代理 · 架构总览</text>
+  <text x="72" y="101" class="title">三角色协作架构</text>
+  <text x="72" y="132" class="subtitle">协调器推进状态，角色在独立上下文中工作，共享状态保留可追溯证据。</text>
+
+  <!-- User task -->
+  <rect x="70" y="178" width="285" height="140" rx="20" fill="#FFFFFF" stroke="#D8E0EA" stroke-width="1.5"/>
+  <rect x="70" y="178" width="7" height="140" rx="3.5" fill="#64748B"/>
+  <circle cx="111" cy="218" r="16" fill="#E9EEF5"/>
+  <path d="M104 217h14M111 210v14" stroke="#43556D" stroke-width="2" stroke-linecap="round"/>
+  <text x="139" y="225" class="card-title">用户任务</text>
+  <text x="98" y="263" class="body">目标 · 约束 · 完成标准</text>
+  <text x="98" y="289" class="small">输入范围与验收依据</text>
+
+  <!-- Orchestrator -->
+  <rect x="480" y="150" width="480" height="184" rx="22" fill="#172B4D"/>
+  <text x="514" y="181" font-size="12" font-weight="700" letter-spacing="1.6" fill="#AFC4E2">流程协调</text>
+  <text x="514" y="219" font-size="25" font-weight="700" fill="#FFFFFF">协调器</text>
+  <text x="514" y="248" font-size="15" fill="#D9E4F2">调度角色 · 推进状态机 · 控制权限</text>
+  <rect x="514" y="271" width="102" height="31" rx="15.5" fill="#2B4264"/>
+  <text x="565" y="292" font-size="13" text-anchor="middle" fill="#EEF4FC">步骤派发</text>
+  <rect x="627" y="271" width="102" height="31" rx="15.5" fill="#2B4264"/>
+  <text x="678" y="292" font-size="13" text-anchor="middle" fill="#EEF4FC">状态读写</text>
+  <rect x="740" y="271" width="142" height="31" rx="15.5" fill="#2B4264"/>
+  <text x="811" y="292" font-size="13" text-anchor="middle" fill="#EEF4FC">全局修正预算 · 8 轮</text>
+
+  <!-- Deliverable -->
+  <rect x="1085" y="178" width="285" height="140" rx="20" fill="#FFFFFF" stroke="#D8E0EA" stroke-width="1.5"/>
+  <rect x="1085" y="178" width="7" height="140" rx="3.5" fill="#2E7D67"/>
+  <circle cx="1126" cy="218" r="16" fill="#E4F4EE"/>
+  <path d="M1119 218l5 5 10-11" fill="none" stroke="#26735E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="1154" y="225" class="card-title">交付结果</text>
+  <text x="1113" y="263" class="body">进度 · 最终产物 · 关键记录</text>
+  <text x="1113" y="289" class="small">状态与证据共同闭环</text>
+
+  <!-- Top-level flow -->
+  <path d="M355 248 H480" class="connector" marker-end="url(#arrow)"/>
+  <rect x="373" y="215" width="91" height="24" rx="12" fill="#F5F7FB"/>
+  <text x="418.5" y="232" font-size="12" text-anchor="middle" fill="#64748B">提交目标</text>
+  <path d="M960 248 H1085" class="connector" marker-end="url(#arrow)"/>
+  <rect x="981" y="215" width="87" height="24" rx="12" fill="#F5F7FB"/>
+  <text x="1024.5" y="232" font-size="12" text-anchor="middle" fill="#64748B">完成后交付</text>
+
+  <!-- Independent role group -->
+  <rect x="64" y="405" width="1312" height="238" rx="24" fill="#EDF2F8" stroke="#DEE6F0" stroke-width="1.4"/>
+  <text x="96" y="438" font-size="12" font-weight="700" letter-spacing="1.5" fill="#607086">三个独立角色 · 独立上下文</text>
+  <text x="1344" y="438" font-size="13" text-anchor="end" fill="#66768B">协调器按当前状态派发角色</text>
+
+  <!-- Dispatch bus -->
+  <path d="M720 334 V382 M270 382 H1170" class="connector"/>
+  <path d="M270 382 V454" class="connector" marker-end="url(#arrow)"/>
+  <path d="M720 382 V454" class="connector" marker-end="url(#arrow)"/>
+  <path d="M1170 382 V454" class="connector" marker-end="url(#arrow)"/>
+
+  <!-- Planner card -->
+  <rect x="86" y="462" width="368" height="143" rx="18" fill="#FFFFFF" stroke="#DCCDF5" stroke-width="1.5"/>
+  <rect x="86" y="462" width="6" height="143" rx="3" fill="#8056B3"/>
+  <circle cx="122" cy="498" r="15" fill="#F1EAFB"/>
+  <path d="M116 498h12M122 492v12" stroke="#70449F" stroke-width="1.8" stroke-linecap="round"/>
+  <text x="149" y="505" class="role-title" fill="#56327F">规划代理</text>
+  <text x="112" y="542" class="role-body">拆解任务 · 定义验收标准</text>
+  <text x="112" y="571" class="small">完成后整合最终产物与重要日志</text>
+
+  <!-- Executor card -->
+  <rect x="536" y="462" width="368" height="143" rx="18" fill="#FFFFFF" stroke="#C5DDF1" stroke-width="1.5"/>
+  <rect x="536" y="462" width="6" height="143" rx="3" fill="#2376A6"/>
+  <circle cx="572" cy="498" r="15" fill="#E7F3FB"/>
+  <path d="M567 490v16l12-8z" fill="#2376A6"/>
+  <text x="599" y="505" class="role-title" fill="#155B83">执行代理</text>
+  <text x="562" y="542" class="role-body">每次执行一个获批步骤</text>
+  <text x="562" y="571" class="small">提交产物与可核验证据</text>
+
+  <!-- Reviewer card -->
+  <rect x="986" y="462" width="368" height="143" rx="18" fill="#FFFFFF" stroke="#E8D7AC" stroke-width="1.5"/>
+  <rect x="986" y="462" width="6" height="143" rx="3" fill="#B47B17"/>
+  <circle cx="1022" cy="498" r="15" fill="#FBF2DD"/>
+  <path d="M1014 498c3-6 13-6 16 0-3 6-13 6-16 0z" fill="none" stroke="#9B6710" stroke-width="1.7"/>
+  <circle cx="1022" cy="498" r="2.2" fill="#9B6710"/>
+  <text x="1049" y="505" class="role-title" fill="#85590E">审阅代理</text>
+  <text x="1012" y="542" class="role-body">独立对照验收标准核验</text>
+  <text x="1012" y="571" class="small">确认通过或分类记录缺陷</text>
+
+  <!-- Role outputs into shared state -->
+  <path d="M270 605 V680" class="connector" marker-end="url(#arrow)"/>
+  <path d="M720 605 V680" class="connector" marker-end="url(#arrow)"/>
+  <path d="M1170 605 V680" class="connector" marker-end="url(#arrow)"/>
+
+  <!-- Shared state -->
+  <rect x="180" y="690" width="1080" height="104" rx="20" fill="#E7F4EF" stroke="#BFDCCF" stroke-width="1.5"/>
+  <circle cx="225" cy="742" r="21" fill="#D2EADF"/>
+  <path d="M214 736h22M214 742h22M214 748h22" stroke="#28775F" stroke-width="2" stroke-linecap="round"/>
+  <text x="263" y="732" font-size="20" font-weight="700" fill="#205F4D">版本化共享状态</text>
+  <text x="263" y="760" font-size="14" fill="#4C6E63">计划 · 产物 · 证据 · 审阅记录 · 重要日志 · 模型信息</text>
+  <text x="263" y="782" font-size="12" fill="#668175">每次变更保留版本，供后续角色复核与协调器推进</text>
+
+  <!-- State feedback to the coordinator -->
+  <path d="M1260 742 H1368 V356 H870 V334" class="connector" marker-end="url(#arrow)"/>
+  <rect x="1108" y="341" width="130" height="27" rx="13.5" fill="#F5F7FB"/>
+  <text x="1173" y="359" font-size="12" text-anchor="middle" fill="#53647A">回读最新状态</text>
+</svg>
+
