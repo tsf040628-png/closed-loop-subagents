@@ -33,7 +33,7 @@ The YAML example is a logical profile, not a native configuration file for every
 Codex default profile:
 
 - Planner, Executor, and Reviewer: gpt-6-luna / max.
-- Planner escalation: gpt-6-sol / medium.
+- Planner escalation: gpt-6.1-sol / medium.
 - Earliest escalation: corrective Planner cycle 4.
 - Decision maker: independent Reviewer; upgrade only for a serious planning or route error.
 
