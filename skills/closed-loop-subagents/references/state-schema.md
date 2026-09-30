@@ -33,7 +33,7 @@ An accepted assignment proves what the interface accepted; it does not prove hid
 
 If the user's saved profile requires actual runtime-model telemetry and the host cannot provide it, do not start the run under assignment-only evidence. Ask whether the user accepts that weaker evidence or prefers a host that exposes runtime telemetry.
 
-The Reviewer decides whether to use the configured Planner escalation model for a serious planning or route error. The earliest eligible Planner correction is cycle 4. The Codex default target is gpt-6-sol / medium; other hosts use the exact target saved in their setup profile. Do not make a model upgrade based only on ordinary progress.
+The Reviewer decides whether to use the configured Planner escalation model for a serious planning or route error. The earliest eligible Planner correction is cycle 4. The Codex default target is gpt-6.1-sol / medium; other hosts use the exact target saved in their setup profile. Do not make a model upgrade based only on ordinary progress.
 
 ## Snapshot example
 
