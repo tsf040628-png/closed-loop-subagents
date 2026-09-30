@@ -35,7 +35,7 @@ models:
         executor: {model: gpt-6-luna, reasoning_effort: max}
         reviewer: {model: gpt-6-luna, reasoning_effort: max}
       planner_escalation:
-        model: gpt-6-sol
+        model: gpt-6.1-sol
         reasoning_effort: medium
         earliest_cycle: 4
         decision_maker: reviewer
