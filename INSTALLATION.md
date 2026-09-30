@@ -122,7 +122,7 @@ fi
 
 Codex 角色由宿主运行时的子代理派发机制提供；本仓库没有 `adapters/codex/agents/` 模板可供复制。新开会话；如技能列表未更新，重启 Codex。输入 `$` 并选择 `closed-loop-subagents`，或直接在请求中点名。Codex 文档说明可在 CLI / IDE 中用 `/skills` 查看或 `$` 调用技能；桌面环境的列表入口因界面而异。
 
-本仓库 Codex 适配建议的初始角色设置为 `gpt-6-luna / max`，严重规划或路线错误符合条件时，Reviewer 可从第 4 个修正周期起提出将 Planner 改为 `gpt-6-sol / medium`。首次运行时仍须确认这些 ID 在当前 Codex 环境可选并取得用户确认；这只是 Codex 的建议，不是其他平台的模型目录。
+本仓库 Codex 适配建议的初始角色设置为 `gpt-6-luna / max`，严重规划或路线错误符合条件时，Reviewer 可从第 4 个修正周期起提出将 Planner 改为 `gpt-6.1-sol / medium`。首次运行时仍须确认这些 ID 在当前 Codex 环境可选并取得用户确认；这只是 Codex 的建议，不是其他平台的模型目录。
 
 **验证：**在技能列表中找到 `closed-loop-subagents`，并请求它只输出一个规划草案、不修改文件。确认 Skill 被调用。另行确认当前 Codex 运行环境确实提供独立子代理派发；Skill 安装本身不增加宿主没有的派发能力。
 
