@@ -16,7 +16,7 @@ The core Skill defines roles and review gates. An adapter maps them to host-nati
 
 ## Codex
 
-Package the Skill in a plugin with a root plugin.json and a skills/ directory. The default role model is gpt-6-luna / max. The independent Reviewer may select gpt-6-sol / medium for a serious Planner error from corrective cycle 4 onward. Do not claim actual runtime model verification unless Codex exposes that telemetry for the dispatch.
+Package the Skill in a plugin with a root plugin.json and a skills/ directory. The default role model is gpt-6-luna / max. The independent Reviewer may select gpt-6.1-sol / medium for a serious Planner error from corrective cycle 4 onward. Do not claim actual runtime model verification unless Codex exposes that telemetry for the dispatch.
 
 Official packaging: https://developers.openai.com/plugins/build/plugins
 
