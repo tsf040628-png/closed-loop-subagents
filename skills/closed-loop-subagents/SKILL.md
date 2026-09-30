@@ -42,7 +42,7 @@ metadata:
 
 ## Model policy
 
-Use the current host profile, not a universal model name. The Codex profile defaults all roles to gpt-6-luna / max. From cycle 4 onward, the Reviewer may select gpt-6-sol / medium for the Planner only when it identifies a serious planning or route error. Normal progress, passing reviews, and isolated execution defects do not trigger an upgrade. The Reviewer must tell the Controller the exact model and effort required for the next Planner dispatch.
+Use the current host profile, not a universal model name. The Codex profile defaults all roles to gpt-6-luna / max. From cycle 4 onward, the Reviewer may select gpt-6.1-sol / medium for the Planner only when it identifies a serious planning or route error. Normal progress, passing reviews, and isolated execution defects do not trigger an upgrade. The Reviewer must tell the Controller the exact model and effort required for the next Planner dispatch.
 
 Other hosts use their configured role models. During setup, ask for Planner, Executor, Reviewer, and Planner-escalation model choices from that host's available list. Use the active session model as the initial fallback only when the user accepts inheritance. If the host cannot assign or confirm a requested model, record the limitation; never substitute silently.
 
