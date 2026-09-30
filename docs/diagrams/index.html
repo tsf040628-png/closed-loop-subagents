@@ -271,7 +271,7 @@
       execution: { name: "逐步执行", group: "工作流 · 阶段 02", text: "Executor 每次完成一个获批步骤并提交证据，Reviewer 独立验收。当前步骤通过后继续下一项；出现缺陷则进入统一修正预算。", guide: "逐步执行", diagram: "workflow" },
       integration: { name: "集成与闭环", group: "工作流 · 阶段 03", text: "步骤全部通过后，Planner 集成最终文件并保留重要日志。Reviewer 批准清理清单后，Planner 执行清理并提交回执，最后再做闭环复核。", guide: "集成与闭环", diagram: "workflow" },
       budget: { name: "全局修正预算", group: "工作流 · 统一路由", text: "所有发现共用最多 8 轮修正预算；每轮含一次纠正和一次独立复审。规划或收尾问题回到 Planner，执行缺陷回到 Executor。", guide: "全局修正预算", diagram: "workflow" },
-      upgrade: { name: "模型升级与轮次上限", group: "工作流 · 边界", text: "Reviewer 可从第 4 轮起根据严重规划或路线错误决定是否将 Planner 指派为 gpt-6-sol / medium。达到 8 轮仍未完成时停止并报告，再询问是否追加有界轮次。", guide: "模型升级与轮次上限", diagram: "workflow" }
+      upgrade: { name: "模型升级与轮次上限", group: "工作流 · 边界", text: "Reviewer 可从第 4 轮起根据严重规划或路线错误决定是否将 Planner 指派为 gpt-6.1-sol / medium。达到 8 轮仍未完成时停止并报告，再询问是否追加有界轮次。", guide: "模型升级与轮次上限", diagram: "workflow" }
     };
 
     const fragmentMap = {
