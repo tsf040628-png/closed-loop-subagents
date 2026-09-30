@@ -206,7 +206,7 @@
   <a class="hotspot" href="https://github.com/tsf040628-png/closed-loop-subagents/blob/main/docs/diagrams/module-guide.md#模型升级与轮次上限" aria-label="查看模型升级与轮次上限说明">
   <rect x="90" y="936" width="720" height="62" rx="14" fill="#F5F0FC"/>
   <text x="114" y="961" font-size="13" font-weight="700" fill="#56327F">模型升级</text>
-  <text x="114" y="983" font-size="12" fill="#53647A">第 4 轮起，严重规划或路线错误时，Reviewer 可决定将 Planner 升至 gpt-6-sol / medium。</text>
+  <text x="114" y="983" font-size="12" fill="#53647A">第 4 轮起，严重规划或路线错误时，Reviewer 可决定将 Planner 升至 gpt-6.1-sol / medium。</text>
   </a>
 
   <a class="hotspot" href="https://github.com/tsf040628-png/closed-loop-subagents/blob/main/docs/diagrams/module-guide.md#模型升级与轮次上限" aria-label="查看轮次上限说明">
